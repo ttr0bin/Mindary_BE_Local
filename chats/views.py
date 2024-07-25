@@ -1,8 +1,10 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Chat
-from .serializers import ChatSerializer
+from chats.models import Chat
+from records.models import Record
+from chats.serializers import ChatSerializer
+from records.serializers import RecordSerializer
 from datetime import datetime
 
 """
@@ -18,7 +20,9 @@ date_obj = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
 print(date_obj)  # 출력: 2024-01-01
 """
 
-# 메인화면에서 chat을 POST하거나, 해당 날짜의 모든 데이터를 GET으로 반환하거나...
+# 메인화면 - mindary?date=0000-00-00
+# 메인화면에서 chat을 POST하거나
+# 메인화면에서 GET으로 긴글, 짧은글 모두 반환
 @api_view(['GET', 'POST'])
 def main_page(request):
     date_query_param = request.GET.get('date', None)
@@ -35,8 +39,17 @@ def main_page(request):
     match request.method:
         case 'GET':   # 해당 날짜의 모든 데이터를 GET으로 반환
             data = Chat.objects.filter(created_at__date=date)
-            serializer = ChatSerializer(data, many=True)
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            records = Record.objects.filter(created_at__date=date)
+            
+            chat_serializer = ChatSerializer(data, many=True)
+            record_serializer = RecordSerializer(records, many=True)
+            
+            response_data = {
+                "chats": chat_serializer.data,
+                "records": record_serializer.data
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
         case 'POST':  # 채팅 POST - 오늘만 가능
             if date != today:
                 return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)

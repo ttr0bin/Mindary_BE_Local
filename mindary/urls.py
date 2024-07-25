@@ -17,9 +17,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from chats.views import main_page, chat_detail
+from records.views import record_mode, record_detail
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mindary', main_page),
-    path('mindary/<int:id>', chat_detail),
+    path('mindary/<int:id>', chat_detail),   # chat 삭제 기능 - 필요없으면 나중에 뺍시다.
+    path('mindary/records', record_mode),
+    path('mindary/records/<int:id>', record_detail),    # 긴글 수정 기능
 ]
