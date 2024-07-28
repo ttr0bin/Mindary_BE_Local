@@ -7,3 +7,5 @@ class Record(models.Model):
   content = models.TextField()    # 본문
   created_at = models.DateTimeField(auto_now_add=True) # 날짜 조회 할 때 사용
   edited_at = models.DateTimeField(null=True, blank=True)  # 수정 시간
+  liked = models.BooleanField(default=False) # 작성자가 좋아요를 누르면 True로...
+  
