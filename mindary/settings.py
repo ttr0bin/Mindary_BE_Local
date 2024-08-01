@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -20,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-f*vc1)2ad24ku9t@hssn^wdbc31ub@#ls^u&fv11vq46sdebj$'
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -39,6 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt.token_blacklist',
+    'corsheaders',
 
     'accounts',
     'chats',
@@ -46,6 +52,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # 추가
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -127,3 +134,43 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# 추가
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ],
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # React 개발 서버 URL (예: localhost:3000)
+    # 여기에 필요한 도메인을 추가하세요
+]
+
+# SMTP 서버 설정 (다양한 이메일 서비스 제공업체의 SMTP 서버 설정)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'  # SMTP 서버 주소
+EMAIL_PORT = 587  # SMTP 포트 (보통 587 또는 465)
+EMAIL_USE_TLS = True  # TLS 사용 여부 (보통 True)
+EMAIL_USE_SSL = False  # SSL 사용 여부 (보통 False)
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # 이메일 주소
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 앱 비밀번호
+
+# 발신 이메일 주소
+DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
+
+AUTH_USER_MODEL = 'acccounts.CustomUser'
+
+from datetime import timedelta
+
+# JWT
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=5),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=7),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'TOKEN_BLACKLIST': {
+        'BLACKLIST_AFTER_ROTATION': True,
+    }
+}
