@@ -2,8 +2,6 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('', record_mode),    # POST - 긴 글 작성
-    path('<int:id>', record_detail),    # 긴 글 수정, 좋아요 기능
-    
     path('archive', archive), # archive
+    path('archive/<int:id>', detail_archive), # archive 중 글 1개
 ]

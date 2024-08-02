@@ -16,14 +16,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from chats.views import main_page, chat_detail
-#from acccounts.views import send_verification_code, verify_code, register_user, login, logout, reset_password
+from chats.views import main_page
+from records.views import modify_record
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    #path('admin/', admin.site.urls),
 
-    path('mindary', main_page),
-    path('mindary/<int:id>', chat_detail),   # chat 삭제 기능 : 기능 확정 x
+    path('mindary', main_page),     # 긴글/챗 모드
+    path('mindary/<int:id>', modify_record),   # 긴글 수정
 
     path('mindary/records/', include('records.urls')),
     path('mindary/accounts/', include('accounts.urls')),
