@@ -1,23 +1,23 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from datetime import datetime, date
+
 from chats.models import Chat
 from records.models import Record
 from chats.serializers import ChatSerializer
 from records.serializers import RecordSerializer
-from datetime import datetime
 
 """
 [정리]
-strptime 함수 - "날짜와 시간 형식의 문자열"을 datetime(타입형)으로 변환
+* strptime 함수 - "날짜와 시간 형식의 문자열"을 datetime(타입형)으로 변환
 
-뒤에 .date()를 붙이냐 안붙이냐의 차이점
+* 뒤에 .date()를 붙이냐 안붙이냐의 차이점
+    date_time_obj = datetime.strptime("2024-01-01", "%Y-%m-%d")
+    print(date_time_obj)  # 출력: 2024-01-01 00:00:00
 
-date_time_obj = datetime.strptime("2024-01-01", "%Y-%m-%d")
-print(date_time_obj)  # 출력: 2024-01-01 00:00:00
-
-date_obj = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
-print(date_obj)  # 출력: 2024-01-01
+    date_obj = datetime.strptime("2024-01-01", "%Y-%m-%d").date()
+    print(date_obj)  # 출력: 2024-01-01
 """
 
 # 메인화면 - mindary?date=0000-00-00
@@ -30,26 +30,25 @@ def main_page(request):
         return Response({"error": "쿼리 파라미터가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
     
     try:     # 이때 date는 디비에 있는 데이터의 created_at과 비교 할 날짜
-        date = datetime.strptime(date_query_param, "%Y-%m-%d").date()
+        selected_date = datetime.strptime(date_query_param, "%Y-%m-%d").date()
     except ValueError:
         return Response({"error": "쿼리 파라미터 형식을 지켜주세요. YYYY-MM-DD"}, status=status.HTTP_400_BAD_REQUEST)
     
     today = date.today()
-    
     match request.method:
         case 'GET':   # 해당 날짜의 모든 데이터를 GET으로 반환
-            data = Chat.objects.filter(created_at__date=date)
-            records = Record.objects.filter(created_at__date=date)
+            chats = Chat.objects.filter(created_at__date=selected_date)
+            records = Record.objects.filter(created_at__date=selected_date)
             
-            chat_serializer = ChatSerializer(data, many=True)
+            chat_serializer = ChatSerializer(chats, many=True)
             record_serializer = RecordSerializer(records, many=True)
             
             response_data = {
                 "chats": chat_serializer.data,
                 "records": record_serializer.data
             }
-
             return Response(response_data, status=status.HTTP_200_OK)
+        
         case 'POST':  # 채팅 POST - 오늘만 가능
             if date != today:
                 return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
@@ -68,17 +67,18 @@ def chat_detail(request, id):
         return Response({"error": "쿼리 파라미터가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
     
     try:     # 이때 date는 디비에 있는 데이터의 created_at과 비교 할 날짜
-        date = datetime.strptime(date_query_param, "%Y-%m-%d").date()
+        selected_date = datetime.strptime(date_query_param, "%Y-%m-%d").date()
     except ValueError:
         return Response({"error": "쿼리 파라미터 형식을 지켜주세요. YYYY-MM-DD"}, status=status.HTTP_400_BAD_REQUEST)
     
     today = date.today()
-    if date != today:
+    if selected_date != today:
         return Response({"error": "오늘의 기록만 삭제 할 수 있어요!"}, status=status.HTTP_400_BAD_REQUEST)
     
     try:
         chat = Chat.objects.get(id=id)
     except chat.DoesNotExist:
         return Response({"error": "삭제할 메세지가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+    
     chat.delete()
     return Response({"삭제된 메세지입니다."}, status=status.HTTP_200_OK)   # 메세지 삭제 성공

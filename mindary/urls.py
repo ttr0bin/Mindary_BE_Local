@@ -15,17 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from chats.views import main_page, chat_detail
-from records.views import record_mode, record_detail
 #from acccounts.views import send_verification_code, verify_code, register_user, login, logout, reset_password
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+
     path('mindary', main_page),
-    path('mindary/<int:id>', chat_detail),   # chat 삭제 기능 - 필요없으면 나중에 뺍시다.
-    path('mindary/records', record_mode),    # GET - 모아보기 / POST - 긴글 작성
-    path('mindary/records/<int:id>', record_detail),    # 긴글 수정, 좋아요 기능
+    path('mindary/<int:id>', chat_detail),   # chat 삭제 기능 : 기능 확정 x
+
+    path('mindary/records', include('records.urls')),
 
     # 일반 로그인 uri
     # path('mindary/accounts/original/login', login, name='original_login'),

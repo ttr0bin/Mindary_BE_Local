@@ -6,7 +6,7 @@ class RecordSerializer(serializers.ModelSerializer):
         model = Record
         fields = ['id', 'category', 'title', 'content', 'created_at', 'edited_at', 'liked']
 
-    # edited_at은 수정되었을 때만 표시되게.
+    # edited_at은 수정되었을 때만 표시
     def to_representation(self, instance):
         representation = super().to_representation(instance)
         if instance.edited_at is None:
