@@ -4,7 +4,7 @@ from accounts.models import User
 
 class Record(models.Model):
   writer      = models.ForeignKey(User, on_delete=models.CASCADE) # 작성자
-  
+
   category    = models.CharField(max_length=30)
   title       = models.TextField()    # 제목
   content     = models.TextField()    # 본문

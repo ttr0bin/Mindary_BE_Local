@@ -50,15 +50,13 @@ def record_mode(request):
                 return Response({"error": "쿼리 파라미터 형식을 지켜주세요. YYYY-MM-DD"}, status=status.HTTP_400_BAD_REQUEST)
             
             today = date.today()
-            match request.method:
-                case 'POST':  # 긴 글 POST - 오늘만 가능
-                    if selected_date != today:
-                        return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
-                    record_serializer = RecordSerializer(data=request.data)
-                    if record_serializer.is_valid():
-                        record_serializer.save()
-                        return Response(record_serializer.data, status=status.HTTP_201_CREATED)
-                    return Response(record_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            if selected_date != today:
+                return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
+            record_serializer = RecordSerializer(data=request.data)
+            if record_serializer.is_valid():
+                record_serializer.save()
+                return Response(record_serializer.data, status=status.HTTP_201_CREATED)
+            return Response(record_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         
 # 긴글 수정
 @api_view(['PATCH'])
