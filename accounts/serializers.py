@@ -7,6 +7,11 @@ class UserSerializer(serializers.ModelSerializer):
         model = User
         fields = '__all__'
 
+
+
+"""
+      < Kakao Login >
+"""
 class KakaoLoginRequestSerializer(serializers.Serializer):
     access_code = serializers.CharField()
 
@@ -14,8 +19,10 @@ class KakaoRegisterRequestSerializer(serializers.Serializer):
     access_code = serializers.CharField()
     nickname = serializers.CharField()
 
-""""
-일반 로그인 코드
+
+
+"""
+      < Original Login >
 """
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

@@ -25,7 +25,8 @@ urlpatterns = [
     path('mindary', main_page),
     path('mindary/<int:id>', chat_detail),   # chat 삭제 기능 : 기능 확정 x
 
-    path('mindary/records', include('records.urls')),
+    path('mindary/records/', include('records.urls')),
+    path('mindary/accounts/', include('accounts.urls')),
 
     # 일반 로그인 uri
     # path('mindary/accounts/original/login', login, name='original_login'),
