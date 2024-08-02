@@ -12,52 +12,52 @@ from datetime import datetime, date
     3. 이 상태에서 글을 작성하고 POST를 통해 긴 글 등록
 """
 
-@api_view(['GET', 'POST'])
+@api_view(['POST'])
 def record_mode(request):
-    match request.method:
-        case 'GET':   # 긴글 모아보기
-            # 쿼리 파라미터로 필터링 옵션 받기
-            filter_liked    = request.GET.get('liked', None)
-            order_by_date   = request.GET.get('order_by', None)
-            category        = request.GET.get('category', None)
-            keyword         = request.GET.get('keyword', None)
-
-            # 레코드 쿼리셋 필터링 및 정렬
-            records = Record.objects.all()
-            if category:
-                records = records.filter(category=category)
-            if filter_liked == 'true':   # 좋아요한 글만 필터링
-                records = records.filter(liked=True)
-            if keyword:
-                records = records.filter(title__icontains=keyword)
-            if order_by_date == 'desc':   # 최신순
-                records = records.order_by('-created_at')
-            else:
-                records = records.order_by('created_at')
-
-            record_serializer = RecordSerializer(records, many=True)
-            return Response(record_serializer.data, status=status.HTTP_200_OK)
-        
-        
-        case 'POST':  # 긴글모드에서 긴글 작성하기
-            date_query_param = request.GET.get('date', None)
-            if not date_query_param:
-                return Response({"error": "쿼리 파라미터가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
+    date_query_param = request.GET.get('date', None)
+    if not date_query_param:
+        return Response({"error": "쿼리 파라미터가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
             
-            try:     # 이때 date는 디비에 있는 데이터의 created_at과 비교 할 날짜
-                selected_date = datetime.strptime(date_query_param, "%Y-%m-%d").date()
-            except ValueError:
-                return Response({"error": "쿼리 파라미터 형식을 지켜주세요. YYYY-MM-DD"}, status=status.HTTP_400_BAD_REQUEST)
+    try:     # 이때 date는 디비에 있는 데이터의 created_at과 비교 할 날짜
+        selected_date = datetime.strptime(date_query_param, "%Y-%m-%d").date()
+    except ValueError:
+        return Response({"error": "쿼리 파라미터 형식을 지켜주세요. YYYY-MM-DD"}, status=status.HTTP_400_BAD_REQUEST)
             
-            today = date.today()
-            if selected_date != today:
-                return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
-            record_serializer = RecordSerializer(data=request.data)
-            if record_serializer.is_valid():
-                record_serializer.save()
-                return Response(record_serializer.data, status=status.HTTP_201_CREATED)
-            return Response(record_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+    today = date.today()
+    if selected_date != today:
+        return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
+    record_serializer = RecordSerializer(data=request.data)
+    if record_serializer.is_valid():
+        record_serializer.save()
+        return Response(record_serializer.data, status=status.HTTP_201_CREATED)
+    return Response(record_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+# archive : 긴 글 모아보기
+@api_view(['GET'])
+def archive(request):
+    # 쿼리 파라미터로 필터링 옵션 받기
+    filter_liked    = request.GET.get('liked', None)
+    order_by_date   = request.GET.get('order_by', None)
+    category        = request.GET.get('category', None)
+    keyword         = request.GET.get('keyword', None)
+
+    # 레코드 쿼리셋 필터링 및 정렬
+    records = Record.objects.all()
+    if category:
+        records = records.filter(category=category)
+    if filter_liked == 'true':   # 좋아요한 글만 필터링
+        records = records.filter(liked=True)
+    if keyword:
+        records = records.filter(title__icontains=keyword)
+    if order_by_date == 'desc':   # 최신순
+        records = records.order_by('-created_at')
+    else:
+        records = records.order_by('created_at')
+
+    record_serializer = RecordSerializer(records, many=True)
+    return Response(record_serializer.data, status=status.HTTP_200_OK)
+
+
 # 긴글 수정
 @api_view(['PATCH'])
 def record_detail(request, id):
