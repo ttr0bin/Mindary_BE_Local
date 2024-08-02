@@ -27,13 +27,4 @@ urlpatterns = [
 
     path('mindary/records/', include('records.urls')),
     path('mindary/accounts/', include('accounts.urls')),
-
-    # 일반 로그인 uri
-    # path('mindary/accounts/original/login', login, name='original_login'),
-    # path('mindary/accounts/original/logout', logout, name='original_logout'),
-    # path('mindary/accounts/original/send-code', send_verification_code, name='send_code'),
-    # path('mindary/accounts/original/verify-code', verify_code, name='verify_code'),
-    # path('mindary/accounts/original/register', register_user, name='register_user'),
-    # path('mindary/accounts/original/reset_password/', reset_password, name='reset_password'),
-
 ]
