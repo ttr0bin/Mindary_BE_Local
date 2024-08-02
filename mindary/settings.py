@@ -160,7 +160,7 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 앱 비밀번호
 # 발신 이메일 주소
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
 
-AUTH_USER_MODEL = 'acccounts.CustomUser'
+AUTH_USER_MODEL = 'accounts.User'
 
 from datetime import timedelta
 

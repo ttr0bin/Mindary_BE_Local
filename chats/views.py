@@ -50,7 +50,7 @@ def main_page(request):
             return Response(response_data, status=status.HTTP_200_OK)
         
         case 'POST':  # 채팅 POST - 오늘만 가능
-            if date != today:
+            if selected_date != today:
                 return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
             serializer = ChatSerializer(data=request.data)
             if serializer.is_valid():
