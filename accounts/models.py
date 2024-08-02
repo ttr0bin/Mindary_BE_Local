@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import AbstractBaseUser
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
 
@@ -41,3 +42,12 @@ class User(AbstractBaseUser):
   @property
   def is_staff(self):
     return self.is_admin
+  
+# 이메일 인증 관련 모델
+class EmailVerification(models.Model):
+    email = models.EmailField()
+    code = models.CharField(max_length=4)
+    expires_at = models.DateTimeField()
+
+    def is_expired(self):
+        return timezone.now() > self.expires_at

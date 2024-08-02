@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from .models import User
-import re
+import re     
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -24,7 +24,7 @@ class KakaoRegisterRequestSerializer(serializers.Serializer):
 """
       < Original Login >
 """
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class OriginalRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
 
     class Meta:
@@ -38,6 +38,15 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
                 "비밀번호는 8~12 자리의 영소문자, 숫자, 특수문자 조합이어야 합니다."
             )
         return value
+    
+    def create(self, validated_data):
+        # create_user 메서드를 호출하여 새로운 사용자 생성
+        user = User.objects.create_user(
+            email=validated_data['email'],
+            nickname=validated_data['nickname'],
+            password=validated_data['password']
+        )
+        return user
 
 # 이메일
 class EmailVerificationSendSerializer(serializers.Serializer):
