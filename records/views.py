@@ -17,7 +17,8 @@ def archive(request):
     keyword         = request.GET.get('keyword', None)
 
     # 레코드 쿼리셋 필터링 및 정렬
-    records = Record.objects.filter(writer = request.user)
+    records = Record.objects.all()
+    #records = Record.objects.filter(writer = request.user)
     if category:
         records = records.filter(category=category)
     if filter_liked == 'true':   # 좋아요한 글만 필터링

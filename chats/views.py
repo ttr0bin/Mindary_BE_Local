@@ -41,11 +41,11 @@ def main_page(request):
     match request.method:
         case 'GET':   
             if mode == 'chat':
-                chats = Chat.objects.filter(created_at__date=selected_date, writer=request.user)
+                chats = Chat.objects.filter(created_at__date=selected_date) #, writer=request.user
                 chat_serializer = ChatSerializer(chats, many=True)
                 return Response(chat_serializer.data, status=status.HTTP_200_OK)
             elif mode == 'record':
-                records = Record.objects.filter(created_at__date=selected_date, writer=request.user)
+                records = Record.objects.filter(created_at__date=selected_date) #, writer=request.user
                 record_serializer = RecordSerializer(records, many=True)
                 return Response(record_serializer.data, status=status.HTTP_200_OK)
             else:
@@ -57,13 +57,15 @@ def main_page(request):
             if mode == 'chat':
                 serializer = ChatSerializer(data=request.data)
                 if serializer.is_valid():
-                    serializer.save(writer=request.user)
+                    serializer.save()
+                    #serializer.save(writer=request.user)
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             elif mode == 'record':
                 serializer = RecordSerializer(data=request.data)
                 if serializer.is_valid():
-                    serializer.save(writer=request.user)
+                    serializer.save()
+                    #serializer.save(writer=request.user)
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
             else:
