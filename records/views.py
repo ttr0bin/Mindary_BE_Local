@@ -28,7 +28,7 @@ def record_mode(request):
         return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
     record_serializer = RecordSerializer(data=request.data)
     if record_serializer.is_valid():
-        record_serializer.save()
+        record_serializer.save(writer_id = request.user.id)
         return Response(record_serializer.data, status=status.HTTP_201_CREATED)
     return Response(record_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -42,7 +42,7 @@ def archive(request):
     keyword         = request.GET.get('keyword', None)
 
     # 레코드 쿼리셋 필터링 및 정렬
-    records = Record.objects.all()
+    records = Record.objects.filter(writer = request.user)
     if category:
         records = records.filter(category=category)
     if filter_liked == 'true':   # 좋아요한 글만 필터링

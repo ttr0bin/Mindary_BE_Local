@@ -37,7 +37,7 @@ def main_page(request):
     today = date.today()
     match request.method:
         case 'GET':   # 해당 날짜의 모든 데이터를 GET으로 반환
-            chats = Chat.objects.filter(created_at__date=selected_date)
+            chats = Chat.objects.filter(created_at__date=selected_date, writer = request.user)
             records = Record.objects.filter(created_at__date=selected_date)
             
             chat_serializer = ChatSerializer(chats, many=True)
@@ -54,7 +54,7 @@ def main_page(request):
                 return Response({"error": "오늘의 하루는 오늘 날짜에 기록해보아요!"}, status=status.HTTP_400_BAD_REQUEST)
             serializer = ChatSerializer(data=request.data)
             if serializer.is_valid():
-                serializer.save()
+                serializer.save(writer_id = request.user.id)
                 return Response(serializer.data, status=status.HTTP_201_CREATED)
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
