@@ -160,6 +160,7 @@ def verify(request):
 """
       < Original Login >
 """
+from django.utils.encoding import smart_str
 # 새 비밀번호 생성 함수
 def create_new_password(length=12):
     characters = string.ascii_letters + string.digits + string.punctuation
@@ -176,12 +177,12 @@ def send_new_password(email, new_password):
 
 # 코드 전송 함수
 def send_code(email, code):
-    subject = '마인더리(mindary) 인증코드 안내 이메일입니다.'
-    message = f'안녕하세요. 마인더리(mindary)입니다. \n 인증코드를 확인해주세요. \n {code} \n 인증코드는 이메일 발송 시점부터 3분동안 유효합니다.'
+    subject = smart_str('마인더리(mindary) 인증코드 안내 이메일입니다.')
+    message = smart_str(f'안녕하세요. 마인더리(mindary)입니다. \n 인증코드를 확인해주세요. \n {code} \n 인증코드는 이메일 발송 시점부터 3분동안 유효합니다.')
     email_from = 'mdy3722@gmail.com'
-    recipient_list = [email,]
+    recipient_list = [email]
 
-    send_mail(subject, message, email_from, recipient_list)
+    send_mail(subject, message, email_from, recipient_list, fail_silently=False)
 
 # 인증 코드 전송하기
 @api_view(['POST'])
@@ -254,6 +255,7 @@ def original_login(request):
     }, status=status.HTTP_200_OK)
 
 @api_view(['POST'])
+@permission_classes([IsAuthenticated])
 def original_logout(request):
     try:
         refresh_token = request.data.get('refresh_token')
