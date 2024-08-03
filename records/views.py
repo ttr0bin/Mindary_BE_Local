@@ -8,7 +8,7 @@ from datetime import datetime, date
 
 # archive : 긴 글 모아보기
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
+@permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def archive(request):
     # 쿼리 파라미터로 필터링 옵션 받기
     filter_liked    = request.GET.get('liked', None)
@@ -18,7 +18,7 @@ def archive(request):
 
     # 레코드 쿼리셋 필터링 및 정렬
     records = Record.objects.all()
-    #records = Record.objects.filter(writer = request.user)
+    records = Record.objects.filter(writer = request.user)
     if category:
         records = records.filter(category=category)
     if filter_liked == 'true':   # 좋아요한 글만 필터링
@@ -35,7 +35,7 @@ def archive(request):
 
 # archive 중 글 한 개 조회
 @api_view(['GET'])
-# @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
+@permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def detail_archive(request, id):
     try:
         record = Record.objects.get(id=id)
@@ -55,7 +55,7 @@ def detail_archive(request, id):
 """
 # 긴글 수정
 @api_view(['PATCH'])
-# @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
+@permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def modify_record(request, id):
     date_query_param = request.GET.get('date', None)
     mode = request.GET.get('mode', None)
