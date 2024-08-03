@@ -144,7 +144,8 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # React 개발 서버 URL (예: localhost:3000)
-    # 여기에 필요한 도메인을 추가하세요
+    "http://43.200.87.30",
+    "http://43.201.89.165",
 ]
 
 # SMTP 서버 설정 (다양한 이메일 서비스 제공업체의 SMTP 서버 설정)
