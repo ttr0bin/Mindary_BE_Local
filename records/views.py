@@ -70,9 +70,9 @@ def modify_record(request, id):
     except ValueError:
         return Response({"error": "쿼리 파라미터 형식을 지켜주세요. YYYY-MM-DD"}, status=status.HTTP_400_BAD_REQUEST)
     
-    today = date.today()
-    if selected_date != today:
-        return Response({"error": "오늘의 기록만 수정 할 수 있어요!"}, status=status.HTTP_400_BAD_REQUEST)
+    # today = date.today()
+    # if selected_date != today:
+    #     return Response({"error": "오늘의 기록만 수정 할 수 있어요!"}, status=status.HTTP_400_BAD_REQUEST)
 
     try:
         record = Record.objects.get(id=id)
