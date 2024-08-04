@@ -186,6 +186,7 @@ def make_wordcloud(request):
     return Response({"image_url": image_url})
 
 # 워드 클라우드 조회 함수
+# 캘린더 페이지에서 조회
 @api_view(['GET'])
 def get_wordcloud(request):
     date_query_param = request.GET.get('date', None)
@@ -202,6 +203,21 @@ def get_wordcloud(request):
         start_of_week = date_obj - timedelta(days=date_obj.weekday())
         yearmonthdate = start_of_week.strftime('%Y%m%d')
         image_name = yearmonthdate + "_week.png"
+
+    image_url = settings.MEDIA_URL + image_name
+    return Response({"image_url": image_url})
+
+# 아카이브 페이지에서 조회
+@api_view(['GET'])
+def get_wordcloud_archive(request):
+    date_query_param = request.GET.get('date', None)
+    date_obj = datetime.strptime(date_query_param + '01', '%Y%m%d')
+    next_month_date = date_obj.replace(day=1) + timedelta(days=31)  # 31일을 더해서 다음 달의 첫 날로 이동
+    
+    # "%Y%m" 형식으로 변환
+    next_month_str = next_month_date.strftime('%Y%m')
+
+    image_name = next_month_str + "_month.png"
 
     image_url = settings.MEDIA_URL + image_name
     return Response({"image_url": image_url})

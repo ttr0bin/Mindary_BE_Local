@@ -28,6 +28,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'wordcloud_images') # 파일 시스템에서
 
 CRONJOBS = [
     ('0 0 * * 1', 'records.views.make_wordcloud'),  # 매주 월요일 00시에 실행
+    ('0 0 1 * *', 'records.views.함수이름'),        # 매달 1일 00시에 실행
 ]
 
 # Quick-start development settings - unsuitable for production
