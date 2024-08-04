@@ -193,6 +193,11 @@ def send_verification_code(request):
     serializer = EmailVerificationSendSerializer(data=request.data)
     if serializer.is_valid():
         email = serializer.validated_data['email']
+
+        # 이메일이 이미 등록된 사용자에게 속해 있는지 확인
+        if User.objects.filter(email=email).exists():
+            return Response({'error': '이미 존재하는 회원입니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
         code = f"{random.randint(1000, 9999)}"
         expires_at = timezone.now() + timedelta(minutes=5)
         EmailVerification.objects.create(email=email, code=code, expires_at=expires_at)
