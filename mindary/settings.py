@@ -154,8 +154,8 @@ EMAIL_HOST = 'smtp.gmail.com'  # SMTP 서버 주소
 EMAIL_PORT = 587  # SMTP 포트 (보통 587 또는 465)
 EMAIL_USE_TLS = True  # TLS 사용 여부 (보통 True)
 EMAIL_USE_SSL = False  # SSL 사용 여부 (보통 False)
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')  # 이메일 주소
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')  # 앱 비밀번호
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
 # 발신 이메일 주소
 DEFAULT_FROM_EMAIL = os.environ.get('EMAIL_HOST_USER')
