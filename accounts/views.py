@@ -28,6 +28,8 @@ from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
 
+from django.views.decorators.csrf import csrf_exempt
+
 
 
 """
@@ -78,7 +80,8 @@ def extract_kakao_email(kakao_data):
         return payload['email']
     except jwt.InvalidTokenError:
         return Response({'detail': 'OIDC auth failed'}, status=status.HTTP_401_UNAUTHORIZED)
-    
+
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def kakao_login(request):
@@ -105,6 +108,7 @@ def kakao_login(request):
         'refresh_token': str(refresh)
     }, status=status.HTTP_200_OK)
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([AllowAny])
 def kakao_register(request):
@@ -149,7 +153,7 @@ def kakao_register(request):
 #         return Response({'detail': '로그아웃되었습니다.'}, status=status.HTTP_200_OK)
 #     else:
 #         return Response({'detail': '로그아웃 실패'}, status=status.HTTP_400_BAD_REQUEST)
-    
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def verify(request):
@@ -254,6 +258,7 @@ def original_login(request):
         'refresh_token': str(refresh_token),
     }, status=status.HTTP_200_OK)
 
+@csrf_exempt
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def original_logout(request):

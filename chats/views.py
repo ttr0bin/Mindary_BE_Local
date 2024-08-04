@@ -9,6 +9,8 @@ from records.models import Record
 from chats.serializers import ChatSerializer
 from records.serializers import RecordSerializer
 
+from django.views.decorators.csrf import csrf_exempt
+
 """
 [정리]
 * strptime 함수 - "날짜와 시간 형식의 문자열"을 datetime(타입형)으로 변환
@@ -22,7 +24,7 @@ from records.serializers import RecordSerializer
 """
 
 # 메인화면 - mindary?date=0000-00-00
-
+@csrf_exempt
 @api_view(['GET', 'POST'])
 @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def main_page(request):

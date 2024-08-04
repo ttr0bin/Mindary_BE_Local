@@ -6,7 +6,10 @@ from records.models import Record
 from records.serializers import RecordSerializer
 from datetime import datetime, date
 
+from django.views.decorators.csrf import csrf_exempt
+
 # archive : 긴 글 모아보기
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def archive(request):
@@ -33,6 +36,7 @@ def archive(request):
     return Response(record_serializer.data, status=status.HTTP_200_OK)
 
 # archive 중 글 한 개 조회
+@csrf_exempt
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def detail_archive(request, id):
@@ -53,6 +57,7 @@ def detail_archive(request, id):
       긴글모드에서 진행!!! 모아보기랑 관련 없음!!!
 """
 # 긴글 수정 및 삭제
+@csrf_exempt
 @api_view(['PATCH', 'DELETE'])
 @permission_classes([IsAuthenticated])   # 로그인 유저만 권한 있음
 def modify_record(request, id):
