@@ -141,26 +141,17 @@ def generate_wordcloud(texts):
         stopwords=stopwords,
         font_path=font_path
     ).generate_from_frequencies(frequencies)
-
+    
     return wordcloud.to_image()
 
 # 워드 클라우드 최초 생성
-def make_wordcloud(request):
-    ver = request.GET.get('wordcloud', 'week')
+def make_week_wordcloud(request):
     now = datetime.now()
-    # month / week 에 따라 data 담기
-    if ver == 'month':
-        current_month_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
-        start = current_month_start - timedelta(seconds=1) # 지난 달 마지막 날
-        end = start.replace(day=1, hour=0, minute=0, second=0, microsecond=0) #지난 달 첫 날
-        # 이미지 파일 이름 지정
-        image_name = now.strftime("%Y%m") + "_month.png" 
-    else: # week
-        current_start = now.replace(hour=0, minute=0, second=0, microsecond=0)   # 월요일 00시00분00초
-        start = current_start - timedelta(days=7) # 지난 주 월요일
-        end = current_start - timedelta(seconds=1) # 지난 주 일요일
-        # 이미지 파일 이름 지정
-        image_name = now.strftime("%Y%m%d") + "_week.png"
+    current_start = now.replace(hour=0, minute=0, second=0, microsecond=0)   # 월요일 00시00분00초
+    start = current_start - timedelta(days=7) # 지난 주 월요일
+    end = current_start - timedelta(seconds=1) # 지난 주 일요일
+    # 이미지 파일 이름 지정
+    image_name = now.strftime("%Y%m%d") + "_week.png"
     
     # 시간대를 인식하는 datetime 객체로 변환 (Django에서 사용하는 timezone aware datetime 객체)
     range_start = make_aware(start)
@@ -168,8 +159,8 @@ def make_wordcloud(request):
 
     records = Record.objects.filter(writer=request.user, created_at__range=[range_start, range_end])
     texts = [record.content for record in records]
-    if not texts: # 프론트에서 "지난 ~ 간 글이 없어요!" 등 띄우기
-        return Response({"message": "No text content found in records"}, status=404)
+    # if not texts: # 프론트에서 "지난 ~ 간 글이 없어요!" 등 띄우기
+    #     return Response({"message": "No text content found in records"}, status=404)
     
     # 워드클라우드 이미지 생성
     wordcloud_image = generate_wordcloud(texts)
@@ -178,9 +169,34 @@ def make_wordcloud(request):
     image_path = os.path.join(settings.MEDIA_ROOT, image_name)
     wordcloud_image.save(image_path)
 
-    if not os.path.exists(image_path):
-        print("Image file was not saved.")
-        return Response({"message": "Failed to save image file"}, status=500)
+    # if not os.path.exists(image_path):
+    #     print("Image file was not saved.")
+    #     return Response({"message": "Failed to save image file"}, status=500)
+
+    image_url = settings.MEDIA_URL + image_name
+    return Response({"image_url": image_url})
+
+def make_month_wordcloud(request):
+    now = datetime.now()
+    current_month_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
+    start = current_month_start - timedelta(seconds=1) # 지난 달 마지막 날
+    end = start.replace(day=1, hour=0, minute=0, second=0, microsecond=0) #지난 달 첫 날
+    # 이미지 파일 이름 지정
+    image_name = now.strftime("%Y%m") + "_month.png" 
+    
+    # 시간대를 인식하는 datetime 객체로 변환 (Django에서 사용하는 timezone aware datetime 객체)
+    range_start = make_aware(start)
+    range_end = make_aware(end)
+
+    records = Record.objects.filter(writer=request.user, created_at__range=[range_start, range_end])
+    texts = [record.content for record in records]
+    
+    # 워드클라우드 이미지 생성
+    wordcloud_image = generate_wordcloud(texts)
+    
+    # 이미지 파일로 변환
+    image_path = os.path.join(settings.MEDIA_ROOT, image_name)
+    wordcloud_image.save(image_path)
 
     image_url = settings.MEDIA_URL + image_name
     return Response({"image_url": image_url})
@@ -188,6 +204,7 @@ def make_wordcloud(request):
 # 워드 클라우드 조회 함수
 # 캘린더 페이지에서 조회
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_wordcloud(request):
     date_query_param = request.GET.get('date', None)
     date_obj = datetime.strptime(date_query_param, '%Y-%m-%d')
@@ -209,6 +226,7 @@ def get_wordcloud(request):
 
 # 아카이브 페이지에서 조회
 @api_view(['GET'])
+@permission_classes([IsAuthenticated])
 def get_wordcloud_archive(request):
     date_query_param = request.GET.get('date', None)
     date_obj = datetime.strptime(date_query_param + '01', '%Y%m%d')
