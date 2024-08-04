@@ -2,7 +2,6 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path('wordcloud', make_wordcloud), 
     path('wordcloud/get-wordcloud', get_wordcloud), 
     path('archive/get-wordcloud', get_wordcloud_archive), 
 

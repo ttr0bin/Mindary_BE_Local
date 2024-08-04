@@ -145,8 +145,8 @@ def generate_wordcloud(texts):
     return wordcloud.to_image()
 
 # 워드 클라우드 최초 생성
-@api_view(['GET'])
-@permission_classes([IsAuthenticated])
+# @api_view(['GET'])
+# @permission_classes([IsAuthenticated])
 def make_wordcloud(request):
     ver = request.GET.get('wordcloud', 'week')
     now = datetime.now()
