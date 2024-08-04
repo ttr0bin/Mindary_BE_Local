@@ -19,6 +19,16 @@ load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# 프로젝트의 루트 디렉토리를 가리키도록 BASE_DIR 설정
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+# 파일 저장 경로
+MEDIA_URL = '/wordcloud_images/' # URL을 통해 미디어 파일에 접근할 경로
+MEDIA_ROOT = os.path.join(BASE_DIR, 'wordcloud_images') # 파일 시스템에서 미디어 파일이 저장되는 실제 경로
+
+CRONJOBS = [
+    ('0 0 * * 1', 'records.views.make_wordcloud'),  # 매주 월요일 00시에 실행
+]
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -44,6 +54,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework_simplejwt.token_blacklist',
     'corsheaders',
+    'django_crontab',
 
     'accounts',
     'chats',
@@ -89,7 +100,7 @@ WSGI_APPLICATION = 'mindary.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 

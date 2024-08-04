@@ -71,6 +71,27 @@ def main_page(request):
             else:
                 return Response({"error": "유효하지 않은 모드입니다."}, status=status.HTTP_400_BAD_REQUEST)
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # 채팅 삭제 기능 - 채팅은 카톡처럼 별도의 수정 없이 삭제만 가능하도록 구현해봤음.
 # 글 id에 맞춰서 삭제해야 하므로, 별도의 url pattern을 설정하고, 그렇기 때문에 별도의 함수로 구현
 # @api_view(['DELETE'])
