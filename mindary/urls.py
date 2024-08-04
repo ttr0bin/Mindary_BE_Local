@@ -20,7 +20,7 @@ from chats.views import main_page
 from records.views import modify_record
 
 urlpatterns = [
-    #path('admin/', admin.site.urls),
+    path('admin/', admin.site.urls),
 
     path('mindary', main_page),     # 긴글/챗 모드
     path('mindary/<int:id>', modify_record),   # 긴글 수정
