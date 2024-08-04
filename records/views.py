@@ -21,7 +21,9 @@ def archive(request):
 
     # 레코드 쿼리셋 필터링 및 정렬
     records = Record.objects.filter(writer = request.user)
-    if category:
+    if category == '북마크':
+        records = records.filter(liked=True)
+    elif category:
         records = records.filter(category=category)
     if filter_liked == 'true':   # 좋아요한 글만 필터링
         records = records.filter(liked=True)
