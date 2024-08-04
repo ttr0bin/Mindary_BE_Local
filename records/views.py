@@ -145,12 +145,10 @@ def generate_wordcloud(texts):
     return wordcloud.to_image()
 
 # 워드 클라우드 최초 생성
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
 def make_wordcloud(request):
     ver = request.GET.get('wordcloud', 'week')
     now = datetime.now()
-    # month / week 에 따라
+    # month / week 에 따라 data 담기
     if ver == 'month':
         current_month_start = now.replace(hour=0, minute=0, second=0, microsecond=0)
         start = current_month_start - timedelta(seconds=1) # 지난 달 마지막 날
