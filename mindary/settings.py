@@ -16,11 +16,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 # 프로젝트의 루트 디렉토리를 가리키도록 BASE_DIR 설정
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 # 파일 저장 경로
 MEDIA_URL = '/wordcloud_images/' # URL을 통해 미디어 파일에 접근할 경로
@@ -38,9 +35,9 @@ CRONJOBS = [
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS = ['43.200.87.30','43.201.89.165', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -100,12 +97,8 @@ WSGI_APPLICATION = 'mindary.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'mindary_db',
-        'USER': 'deokyoung',
-        'PASSWORD': 'deokyoung1234!',
-        'HOST': 'mindary-db.cfmagso24o5j.ap-northeast-2.rds.amazonaws.com',
-        'PORT': '3306'
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
     }
 }
 
