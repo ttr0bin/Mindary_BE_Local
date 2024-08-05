@@ -102,9 +102,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'mindary_db',
-        'USER': os.environ.get('DATABASE_USER'),
-        'PASSWORD': os.environ.get('DATABASE_PASSWORD'),
-        'HOST': os.environ.get('DATABASE_HOST'),
+        'USER': 'deokyoung',
+        'PASSWORD': 'deokyoung1234!',
+        'HOST': 'mindary-db.cfmagso24o5j.ap-northeast-2.rds.amazonaws.com',
         'PORT': '3306'
     }
 }
